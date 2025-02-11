@@ -87,6 +87,7 @@ def find_password():
               
 
 # ---------------------------- UI SETUP ------------------------------- #
+
 window = Tk()
 window.title('password manager')
 window.config(padx=45, pady=45, bg='#9bdeac') # green hex code 
