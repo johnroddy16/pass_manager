@@ -62,6 +62,7 @@ def save():
         messagebox.showwarning(title='Oops', message='Don\'t leave any fields empty!') # titles do not show on macos without a special technique! 
         
 # -----------------------SHOW EMAIL/PASSWORD -------------------------- #
+
 def find_password():
     web_data = website.get()
     if web_data:
