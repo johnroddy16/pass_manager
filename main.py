@@ -21,7 +21,7 @@ def generate_password():
     shuffle(password_list)
     pass_word = ''.join(password_list)
     password.insert(0, pass_word)
-    pyperclip.copy(pass_word)
+    pyperclip.copy(pass_word) 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #  
     
@@ -93,7 +93,7 @@ window.title('password manager')
 window.config(padx=45, pady=45, bg='#9bdeac') # green hex code 
 
 # create the canvas widget:
-canvas = Canvas(width=200, height=200, bg='#9bdeac', highlightthickness=0) # , highlightthickness=0
+canvas = Canvas(width=200, height=200, bg='#9bdeac', highlightthickness=0) 
 canvas.grid(row=0, column=1)
 
 # load and add image to canvas:
@@ -129,8 +129,8 @@ search.grid(row=1, column=2, pady=3, padx=1)
 # ENTRIES:
 # website entry:
 website = Entry(width=21, bg='#9bdeac', fg='#000000', highlightthickness=0) # white hex code, black hex code 
-website.grid(row=1, column=1, pady=3) # width was 35 and columnspan was 2 
-website.focus() # will cause the cursor to start at website entry
+website.grid(row=1, column=1, pady=3)  
+website.focus() 
 
 # email/username entry:
 email_user = Entry(width=35, bg='#9bdeac', fg='#000000', highlightthickness=0)
