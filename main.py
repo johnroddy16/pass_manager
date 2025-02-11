@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import messagebox # need to import separately as it is not a class 
 from random import choice, randint, shuffle
 import pyperclip 
+import json 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -28,18 +29,61 @@ def save():
     web_data = website.get()
     email_data = email_user.get()
     password_data = password.get()
+    new_data = {
+        web_data: {
+            'email': email_data,
+            'password': password_data, 
+        }
+    }
     
     if web_data and email_data and password_data:
         is_ok = messagebox.askokcancel(message=f'Details entered:\nWebsite: {web_data}\nEmail: {email_data}\nPassword: {password_data}\nSave?')
         if is_ok:
-            with open('data.txt', 'a') as f:
-                f.write(f'{web_data} | {email_data} | {password_data}\n')
+            try:
+                with open('data.json', 'r') as f:
+                    data = json.load(f)
+            
+            except FileNotFoundError as error_message:
+                print(error_message)
+                with open('data.json', 'w') as f:
+                    json.dump(new_data, f, indent=4)
+            
+            else:
+                data.update(new_data)
+                with open('data.json', 'w') as f:
+                    json.dump(data, f, indent=4)
+            
+            finally: # we do not really need the finally keyword but might as well 
                 website.delete(0, END)
                 password.delete(0, END) # could also write 'end'
                 messagebox.showinfo(message='Success! Data saved to file!')
                 pyperclip.copy(password_data)
     else:
         messagebox.showwarning(title='Oops', message='Don\'t leave any fields empty!') # titles do not show on macos without a special technique! 
+        
+# -----------------------SHOW EMAIL/PASSWORD -------------------------- #
+def find_password():
+    web_data = website.get()
+    if web_data:
+        try:
+            with open('data.json', 'r') as file:
+                data = json.load(file)
+                site = web_data
+                email = data[web_data]['email']
+                password = data[web_data]['password'] 
+        except FileNotFoundError as error_message:
+            print(error_message)
+            messagebox.showinfo(message='No data file found')
+        except KeyError as error_message:
+            print(error_message)
+            messagebox.showinfo(message=f'No data found for {site}')
+        else:
+            messagebox.showinfo(message=f'Website: {web_data}\nEmail: {email}\nPassword: {password}')
+            pyperclip.copy(password)
+    else:
+        messagebox.showinfo(message='Please enter a website') 
+        
+              
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -76,10 +120,14 @@ gen_pass.grid(row=3, column=2, pady=3, padx=1)
 add = Button(text='Add', bg='#FFFFFF', fg='#000000', highlightthickness=0, borderwidth=0, highlightbackground='#9bdeac', highlightcolor='#9bdeac', width=32, command=save)
 add.grid(row=4, column=1, columnspan=2, pady=3)
 
+# search button:
+search = Button(text='Search', bg='#FFFFFF', fg='#000000', highlightthickness=0, borderwidth=0, highlightbackground='#9bdeac', highlightcolor='#9bdeac', width=10, command=find_password)
+search.grid(row=1, column=2, pady=3, padx=1)
+
 # ENTRIES:
 # website entry:
-website = Entry(width=35, bg='#9bdeac', fg='#000000', highlightthickness=0) # white hex code, black hex code 
-website.grid(row=1, column=1, columnspan=2, pady=3) 
+website = Entry(width=21, bg='#9bdeac', fg='#000000', highlightthickness=0) # white hex code, black hex code 
+website.grid(row=1, column=1, pady=3) # width was 35 and columnspan was 2 
 website.focus() # will cause the cursor to start at website entry
 
 # email/username entry:
@@ -90,8 +138,8 @@ email_user.insert(0, 'johnroddy.16@gmail.com')
 # password entry:
 password = Entry(width=21, bg='#9bdeac', fg='#000000', highlightthickness=0)
 password.grid(row=3, column=1, pady=3)
-
-
+ 
+    
 
 
 
